@@ -1,12 +1,13 @@
-@import url(./variables.css);
+@import url(./variables.css); /* 📌 Importamos las variables de colores y estilos */
 
+/* 🔄 Reset de estilos globales */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/*****************Body*******************/
+/********************* 🎨 ANIMACIÓN DEL FONDO *********************/
 @keyframes cyberGlow {
     0% { background: linear-gradient(45deg, #0ff, #00f); }
     25% { background: linear-gradient(45deg, #f0f, #f00); }
@@ -15,35 +16,33 @@
     100% { background: linear-gradient(45deg, #0ff, #00f); }
 }
 
+/* 🌌 Estilo del body con animación de fondo */
 body {
-    animation: cyberGlow 5s infinite alternate;
-    transition: background 1s ease-in-out;
-    background-size: 400% 400%;
-    filter: brightness(1.2) contrast(1.1);
+    animation: cyberGlow 5s infinite alternate; /* 🎭 Ciclo infinito de cambio de colores */
+    transition: background 1s ease-in-out; /* 🚀 Transición suave entre cambios */
+    background-size: 400% 400%; /* 🔄 Aumenta el tamaño del fondo para un efecto dinámico */
+    filter: brightness(1.2) contrast(1.1); /* 🖼️ Mejora los colores y el contraste */
 }
 
-
-
-
-/*****************Title*******************/
+/********************* 📝 ESTILOS DEL TÍTULO *********************/
 h1 {
     text-align: center;
     font-family: "DM_Sans-Bold";
     font-size: 2.5rem;
-    color: var(--color-primary);
+    color: var(--color-primary); /* 🌈 Usa color definido en variables */
     margin: 60px 40px;
 }
-/************************************/
 
-/*****************Cards*******************/
+/********************* 🖼️ ESTILOS DE LAS TARJETAS *********************/
 .card-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* 🔄 Permite que las tarjetas se ajusten en varias filas */
     justify-content: center;
     margin: 60px 40px;
-    gap: 20px;
+    gap: 20px; /* 🏗️ Espacio uniforme entre tarjetas */
 }
 
+/* 📌 Estilos individuales de cada tarjeta */
 .card {
     display: flex;
     flex-direction: column;
@@ -51,43 +50,47 @@ h1 {
     width: 300px;
     height: 540px;
     margin: 10px;
-    background: linear-gradient(to bottom left, #b3cde0, #1e3c72);
-    border-radius: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
+    background: linear-gradient(to bottom left, #b3cde0, #1e3c72); /* 🎨 Degradado elegante */
+    border-radius: 30px; /* 🔄 Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 🏗️ Sombra sutil para efecto elevación */
 }
 
+/* 🖼️ Configuración de imágenes dentro de la tarjeta */
 .card-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: cover; /* 📸 Ajuste perfecto sin distorsionar */
     border-radius: 29px;
 }
 
+/* 📝 Área de texto dentro de las tarjetas */
 .card-content {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    gap: 10px;
+    gap: 10px; /* 🔄 Espaciado entre elementos dentro de la tarjeta */
 }
 
+/* 🏷️ Título del personaje */
 .card-title {
     font-family: "DM_Sans-Bold";
     font-size: 1.5rem;
     color: var(--color-primary);
 }
 
+/* 📜 Texto descriptivo dentro de la tarjeta */
 .card-text {
     font-family: "DM_Sans-Regular";
     font-size: 1rem;
     color: var(--color-primary);
 }
 
+/* 🔍 Ajuste del último párrafo dentro del `.card-text` */
 .card-text p:last-child {
     font-size: 7px;
 }
-/******************************************/
-/*****************Buttons*******************/
+
+/********************* 🔘 ESTILOS DE BOTONES *********************/
 .buttom {
     display: flex;
     margin: 60px 1px;
@@ -96,10 +99,10 @@ h1 {
     height: 50%;
     align-items: center;
     justify-content: center;
-    gap: 40px;
-    margin: 20px 1px;
+    gap: 40px; /* 🎯 Espaciado uniforme entre botones */
 }
 
+/* 🔄 Estilos de las flechas "Anterior" y "Siguiente" */
 .arrows {
     display: flex;
     justify-content: center;
@@ -107,33 +110,34 @@ h1 {
     text-decoration: none;
     gap: 30px;
 }
+
+/* 🖼️ Iconos de los botones */
 .arrows img {
     width: 30px;
     height: 30px;
 }
 
+/* 📝 Texto de los botones */
 .arrows p {
     font-family: "DM_Sans-Medium";
     font-size: 22px;
     color: var(--color-primary);
 }
-/******************************************/
 
-/* 📱 Estilos para pantallas menores a 600px (móviles) */
-/* 📱 Ajustes para pantallas pequeñas */
+/********************* 📱 ESTILOS PARA DISPOSITIVOS MÓVILES *********************/
 @media screen and (max-width: 600px) {
     .card-container {
         display: flex;
-        flex-direction: column; /* 🏗️ Acomoda las tarjetas en columna */
+        flex-direction: column; /* 📌 Acomoda las tarjetas en columna */
         align-items: center;
-        gap: 15px; /* 🖼️ Espaciado entre tarjetas */
+        gap: 15px; /* 🌌 Espaciado entre tarjetas */
         padding: 10px; /* 📏 Evita que el contenido toque los bordes */
     }
 
     .card {
         width: 95%; /* 📏 Ajusta el ancho de cada tarjeta */
-        padding: 12px; /* 🖌️ Espaciado interno */
-        font-size: 13px; /* 🔤 Ajusta el tamaño de texto */
+        padding: 12px; /* 📌 Espaciado interno */
+        font-size: 13px; /* 🔤 Ajuste de texto para mejor lectura */
         word-wrap: break-word; /* 📝 Evita que textos largos rompan el diseño */
         overflow: hidden; /* ✂️ Previene desbordamientos visuales */
     }
@@ -155,4 +159,3 @@ h1 {
         line-height: 1.4; /* 📐 Mejora la legibilidad */
     }
 }
-
