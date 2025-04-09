@@ -1,82 +1,96 @@
-console.log("Hello World"); // Mensaje inicial para verificar que el script se está ejecutando correctamente
+console.log("Hello World"); // 📝 Verificación de ejecución del script, útil para pruebas iniciales
 
-// 📌 URL de la API que contiene los datos de los personajes
-const url = "https://dattebayo-api.onrender.com/characters";
+// 🌎 URL de la API donde obtenemos los datos de los personajes
+const API_URL = "https://dattebayo-api.onrender.com/characters";
 
-// 📌 Número de personajes mostrados por página
-const charactersPerPage = 4;
+// 🎯 Configuración de paginación: cuántos personajes mostramos por página
+const CHARACTERS_PER_PAGE = 4;
 
-// 📌 Variables para manejar el estado de la paginación
-let currentPage = 1; // Página actual
-let characters = []; // Array donde almacenaremos los personajes obtenidos de la API
+// 📌 Variables globales para el estado de la aplicación
+let currentPage = 1; // Página actual de la galería
+let characters = []; // Array donde guardamos los personajes obtenidos de la API
 
-// 🚀 **Función para obtener los personajes de la API**
-const getCharacters = async () => {
-    const config = { 
-        method: "GET", // Método GET para obtener datos
-        headers: { "Content-Type": "application/json" } // Se especifica que queremos recibir JSON
-    };
+// 🚀 **Función para obtener los personajes desde la API**
+const fetchCharacters = async () => {
+    try {
+        const response = await fetch(API_URL, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" } // Indicamos que queremos recibir JSON
+        });
 
-    const response = await fetch(url, config); // Se hace la petición a la API
-    const result = await response.json(); // Se convierte la respuesta en un objeto JSON
-    console.log(result); // Se imprime el resultado en la consola para revisar los datos obtenidos
+        if (!response.ok) throw new Error("Error al obtener los datos de la API");
 
-    characters = result.characters || []; // Se almacena el array de personajes, o un array vacío si no hay datos
-    renderPage(currentPage); // Se renderiza la página inicial con los primeros personajes
+        const data = await response.json();
+        characters = data.characters || []; // Si la API no devuelve datos, asignamos un array vacío
+        renderPage(currentPage); // Renderizamos la primera página con los personajes obtenidos
+    } catch (error) {
+        console.error("❌ Error:", error); // Muestra errores si la API falla
+    }
 };
 
-// 🚀 **Función para renderizar la página actual con los personajes correspondientes**
+// 📌 **Función para renderizar los personajes de la página actual**
 const renderPage = (page) => {
-    // 📌 Calculamos los índices de los personajes que deben mostrarse en esta página
-    const startIndex = (page - 1) * charactersPerPage; // Índice de inicio basado en la página actual
-    const endIndex = startIndex + charactersPerPage; // Índice de fin basado en la cantidad de personajes por página
-    const visibleCharacters = characters.slice(startIndex, endIndex); // Extraemos solo los personajes de esta página
+    // 🏗 Calculamos qué personajes deben mostrarse en esta página
+    const startIndex = (page - 1) * CHARACTERS_PER_PAGE;
+    const endIndex = startIndex + CHARACTERS_PER_PAGE;
+    const visibleCharacters = characters.slice(startIndex, endIndex); // Extraemos los personajes de esta página
 
-    // 📌 Recorremos los personajes visibles y los asignamos a las tarjetas
+    // 🔄 Iteramos sobre los personajes visibles y los asignamos a las tarjetas
     visibleCharacters.forEach((character, index) => {
-        const cardIndex = index + 1; // Se establece el número de tarjeta correspondiente
+        updateCardContent(character, index + 1); // Actualiza la info textual de la tarjeta
+        updateCardImage(character, index); // Maneja la imagen de la tarjeta
+    });
+};
 
-        // Se asignan los datos a los elementos HTML correspondientes
-        document.getElementById(`personaje-${cardIndex}`).textContent = character.name || "Nombre no disponible";
-        document.getElementById(`aldea-personaje${cardIndex}`).textContent = `Aldeas donde estuvo: ${character.personal.affiliation?.join(", ") || "Desconocida"}`;
-        document.getElementById(`clan-personaje${cardIndex}`).textContent = `Clan: ${character.personal.clan || "Desconocido"}`;
-        document.getElementById(`habilidades-personaje${cardIndex}`).textContent = `Habilidades: ${character.natureType?.join(", ") || "No disponibles"}`;
+// 📝 **Actualiza la información textual de cada tarjeta**
+const updateCardContent = (character, cardIndex) => {
+    document.getElementById(`personaje-${cardIndex}`).textContent = character.name || "Nombre no disponible";
+    document.getElementById(`aldea-personaje${cardIndex}`).textContent = `Aldeas donde estuvo: ${character.personal.affiliation?.join(", ") || "Desconocida"}`;
+    document.getElementById(`clan-personaje${cardIndex}`).textContent = `Clan: ${character.personal.clan || "Desconocido"}`;
+    document.getElementById(`habilidades-personaje${cardIndex}`).textContent = `Habilidades: ${character.natureType?.join(", ") || "No disponibles"}`;
+};
 
-        // 📌 Manejo de imágenes
-        let imageElement = document.querySelectorAll(".card-image")[index]; // Selecciona la imagen de la tarjeta actual
-        if (imageElement) {
-            let images = character.images; // Obtiene las imágenes del personaje
-            let currentIndex = 0; // Se establece el índice inicial de la imagen
-            
-            // 📌 Se asigna la primera imagen del personaje o una imagen por defecto
-            imageElement.src = images?.[currentIndex] || "./assets/default-image.jpg";
-            imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`;
+// 🎨 **Manejo de imágenes en cada tarjeta**
+const updateCardImage = (character, index) => {
+    const imageElement = document.querySelectorAll(".card-image")[index];
+    if (!imageElement) return; // 🛑 Si no hay imagen en la tarjeta, no ejecutamos nada
 
-            // 📌 Alternar imágenes al hacer clic
-            imageElement.onclick = () => {
-                currentIndex = currentIndex === 0 ? 1 : 0; // Alterna entre `images[0]` y `images[1]`
-                imageElement.src = images?.[currentIndex] || "./assets/default-image.jpg"; // Cambia la imagen
-            };
+    let images = character.images || ["./assets/default-image.jpg"]; // 🖼 Si no hay imágenes en la API, usamos una predeterminada
+    let currentIndex = 0; // 🔄 Índice para alternar entre imágenes
+
+    imageElement.src = images[currentIndex];
+    imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`;
+
+    // 🎭 **Alterna imágenes al hacer clic en ellas**
+    imageElement.addEventListener("click", () => {
+        currentIndex = currentIndex === 0 ? 1 : 0; // Cambia entre `images[0]` y `images[1]`
+        imageElement.src = images[currentIndex] || "./assets/default-image.jpg";
+    });
+};
+
+// 🔄 **Configuración de botones de paginación**
+const setupPagination = () => {
+    document.querySelector(".arrows:nth-child(1)").addEventListener("click", (event) => {
+        event.preventDefault(); // 🚫 Evita la recarga de la página
+        if (currentPage > 1) { // ⏪ Solo permite retroceder si no estamos en la primera página
+            currentPage--;
+            renderPage(currentPage);
+        }
+    });
+
+    document.querySelector(".arrows:nth-child(2)").addEventListener("click", (event) => {
+        event.preventDefault(); // 🚫 Evita la recarga de la página
+        if (currentPage < Math.ceil(characters.length / CHARACTERS_PER_PAGE)) { // ⏩ Solo avanza si no estamos en la última página
+            currentPage++;
+            renderPage(currentPage);
         }
     });
 };
 
-// 🚀 **Manejo de botones de paginación**
-document.querySelector(".arrows:nth-child(1)").addEventListener("click", (event) => {
-    event.preventDefault(); // 📌 Evita la recarga de la página al hacer clic
-    if (currentPage > 1) { // 📌 Verifica que no estamos en la primera página
-        currentPage--; // 📌 Reduce el número de página
-        renderPage(currentPage); // 📌 Actualiza la vista con los personajes de la nueva página
-    }
-});
+// 🚀 **Inicialización de la aplicación**
+const init = () => {
+    fetchCharacters(); // Obtiene los personajes y carga la primera página
+    setupPagination(); // Configura la funcionalidad de los botones "Anterior" y "Siguiente"
+};
 
-document.querySelector(".arrows:nth-child(2)").addEventListener("click", (event) => {
-    event.preventDefault(); // 📌 Evita la recarga de la página al hacer clic
-    if (currentPage < Math.ceil(characters.length / charactersPerPage)) { // 📌 Verifica que no estamos en la última página
-        currentPage++; // 📌 Aumenta el número de página
-        renderPage(currentPage); // 📌 Actualiza la vista con los personajes de la nueva página
-    }
-});
-
-// 🚀 **Inicialización del script**
-getCharacters(); // 📌 Se ejecuta la función para obtener y mostrar los personajes al cargar la página
+init(); // 🏁 Arranque del script
