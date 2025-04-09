@@ -49,7 +49,7 @@ h1 {
     flex-direction: column;
     align-items: center;
     width: 300px;
-    height: 520px;
+    height: 540px;
     margin: 10px;
     background: linear-gradient(to bottom left, #b3cde0, #1e3c72);
     border-radius: 30px;
@@ -97,6 +97,7 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: 40px;
+    margin: 20px 1px;
 }
 
 .arrows {
@@ -104,7 +105,7 @@ h1 {
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    gap: 19px;
+    gap: 30px;
 }
 .arrows img {
     width: 30px;
@@ -113,7 +114,45 @@ h1 {
 
 .arrows p {
     font-family: "DM_Sans-Medium";
-    font-size: 30px;
+    font-size: 22px;
     color: var(--color-primary);
 }
 /******************************************/
+
+/* 📱 Estilos para pantallas menores a 600px (móviles) */
+/* 📱 Ajustes para pantallas pequeñas */
+@media screen and (max-width: 600px) {
+    .card-container {
+        display: flex;
+        flex-direction: column; /* 🏗️ Acomoda las tarjetas en columna */
+        align-items: center;
+        gap: 15px; /* 🖼️ Espaciado entre tarjetas */
+        padding: 10px; /* 📏 Evita que el contenido toque los bordes */
+    }
+
+    .card {
+        width: 95%; /* 📏 Ajusta el ancho de cada tarjeta */
+        padding: 12px; /* 🖌️ Espaciado interno */
+        font-size: 13px; /* 🔤 Ajusta el tamaño de texto */
+        word-wrap: break-word; /* 📝 Evita que textos largos rompan el diseño */
+        overflow: hidden; /* ✂️ Previene desbordamientos visuales */
+    }
+
+    .card-image {
+        width: 100%; /* 📸 Ajusta el tamaño de la imagen */
+        height: auto;
+        object-fit: cover; /* 🖼️ Ajusta el tamaño de las imágenes sin distorsión */
+    }
+
+    .buttom {
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .card-text {
+        font-size: 12px; /* 📏 Hace que el texto se vea más proporcionado */
+        line-height: 1.4; /* 📐 Mejora la legibilidad */
+    }
+}
+
