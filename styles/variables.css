@@ -1,0 +1,19 @@
+:root {
+    --color-primary: #FFFFFF;
+    --color-secondary: #050B20;
+}
+
+@font-face {
+    font-family: "DM_Sans-Bold";
+    src: url(../fonts/DM_Sans/static/DMSans-Bold.ttf);
+}
+
+@font-face {
+    font-family: "DM_Sans-Regular";
+    src: url(../fonts/DM_Sans/static/DMSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: "DM_Sans-Medium";
+    src: url(../fonts/DM_Sans/static/DMSans-Medium.ttf);
+}
