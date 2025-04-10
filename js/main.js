@@ -21,6 +21,7 @@ const fetchCharacters = async () => {
         if (!response.ok) throw new Error("Error al obtener los datos de la API"); // ❌ Manejo de error si la respuesta no es exitosa
 
         const data = await response.json(); // 📥 Convertimos la respuesta a JSON
+        console.log("📥 La API de Naruto ha devuelto los siguientes personajes:", data.characters); // 🔍 Muestra los datos de la API
         characters = data.characters || []; // 🗃️ Si no hay datos, asignamos un array vacío
         renderPage(currentPage); // 🖼️ Renderizamos la primera página
         setupPagination(); // 🔄 Configuramos los botones de paginación
@@ -53,35 +54,90 @@ const updateCardContent = (character, cardIndex) => {
 
 // 🎨 **Actualiza las imágenes de cada tarjeta**
 const updateCardImage = (character, index) => {
-    const imageElement = document.querySelectorAll(".card-image")[index]; // 🖼️ Selecciona la imagen de la tarjeta
-    if (!imageElement) return; // ⛔ Si no hay imagen, no ejecutamos nada
+    const imageElement = document.querySelectorAll(".card-image")[index];
+    if (!imageElement) {
+        console.error(`❌ No se encontró el elemento de imagen para la tarjeta de índice ${index}`);
+        return; // ⛔ Detenemos ejecución si no existe el elemento
+    }
 
-    const images = character.images || ["./assets/default-image.jpg"]; // 🗃️ Si no hay imágenes, usamos una predeterminada
+    // 🖼️ Imágenes predeterminadas específicas para tarjetas sin imágenes o con errores
+    const defaultImages = [
+        "https://preview.redd.it/ebn2tdznx1pd1.jpeg?auto=webp&s=c87056f6fed51dccc88ed7fadcaa41b350d0565b", // Imagen 0
+        "https://s0.smartresize.com/wallpaper/287/15/HD-wallpaper-sage-mode-jiraiya-anime-naruto.jpg" // Imagen 1
+    ];
+
+    // 🗃️ Determina qué imágenes usar: imágenes del personaje o predeterminadas
+    const images = character.images?.length > 0 ? character.images : defaultImages;
+
     let currentIndex = 0; // 🌀 Índice para alternar entre imágenes
 
-    imageElement.src = images[currentIndex]; // 📤 Asigna la primera imagen
-    imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`; // 🖋️ Texto alternativo para accesibilidad
+    // 📤 Función para asignar imágenes de manera segura
+    const assignImage = (url) => {
+        imageElement.src = url; // Asigna la imagen actual
+        imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`;
+        console.log(`✅ Imagen asignada: ${url}`);
+    };
 
+    // 🎯 Si es la tarjeta 8, utiliza las imágenes predeterminadas
+    if (index === 7) {
+        // Asignar la primera imagen predeterminada
+        assignImage(defaultImages[currentIndex]);
+
+        // 🎭 Alternar entre las imágenes predeterminadas al hacer clic
+        imageElement.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % defaultImages.length; // Cambia entre 0 y 1
+            assignImage(defaultImages[currentIndex]); // Asigna la nueva imagen
+            console.log(`🖼️ Alternando imagen en tarjeta 8: ${defaultImages[currentIndex]}`);
+        });
+        return;
+    }
+
+    // 💡 Para otras tarjetas, valida y asigna imágenes dinámicamente
+    const validateAndAssignImage = (url, fallback = false) => {
+        fetch(url)
+            .then((response) => {
+                if (response.ok) {
+                    assignImage(url); // Asigna la imagen si la URL es válida
+                } else if (!fallback) {
+                    console.warn(`⚠️ URL no válida (${response.status}): ${url}. Usando imagen predeterminada.`);
+                    assignImage(defaultImages[0]); // Fallback a la primera imagen predeterminada
+                }
+            })
+            .catch((error) => {
+                if (!fallback) {
+                    console.error(`❌ Error al validar la imagen ${url}:`, error);
+                    assignImage(defaultImages[0]); // Fallback a la primera imagen predeterminada
+                }
+            });
+    };
+
+    // Asignar la primera imagen dinámica o predeterminada
+    validateAndAssignImage(images[currentIndex]);
+
+    // 🎭 Alternar entre imágenes dinámicas o predeterminadas al hacer clic
     imageElement.addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % images.length; // 🔄 Alterna entre imágenes disponibles
-        imageElement.src = images[currentIndex];
+        currentIndex = (currentIndex + 1) % images.length; // Cambia entre 0 y la longitud de imágenes
+        validateAndAssignImage(images[currentIndex]); // Asigna la nueva imagen
+        console.log(`🖼️ Alternando imagen: ${images[currentIndex]}`);
     });
 };
 
+
+
 // 📝 **Actualiza el texto en elementos específicos**
 const updateElementText = (elementId, textContent) => {
-    const element = document.getElementById(elementId); // 🔍 Busca el elemento por ID
-    if (element) element.textContent = textContent; // ✏️ Actualiza el contenido de texto
+    const element = document.getElementById(elementId);
+    if (element) element.textContent = textContent;
 };
 
 // 🔄 **Configura los botones de paginación dinámicamente**
 const setupPagination = () => {
-    const container = document.querySelector(".buttom"); // 📦 Contenedor principal de botones
-    const totalPages = Math.ceil(characters.length / CHARACTERS_PER_PAGE); // ➗ Calcula el total de páginas
+    const container = document.querySelector(".buttom");
+    const totalPages = Math.ceil(characters.length / CHARACTERS_PER_PAGE);
 
-    container.innerHTML = ""; // 🧹 Limpia el contenedor previo
+    container.innerHTML = "";
 
-    // ➕ Botón "Anterior"
+    // Botón "Anterior"
     container.appendChild(createNavigationButton("previous", "Anterior", () => {
         if (currentPage > 1) {
             currentPage--;
@@ -89,17 +145,17 @@ const setupPagination = () => {
         }
     }));
 
-    // 🔢 Botones de páginas
-    const pageButtonsContainer = document.createElement("div"); // 🏗️ Contenedor de botones de páginas
+    // Botones de páginas
+    const pageButtonsContainer = document.createElement("div");
     pageButtonsContainer.className = "pagination-buttons";
 
     for (let i = 1; i <= totalPages; i++) {
-        pageButtonsContainer.appendChild(createPageButton(i)); // 🔨 Agrega botones dinámicamente
+        pageButtonsContainer.appendChild(createPageButton(i));
     }
 
     container.appendChild(pageButtonsContainer);
 
-    // ➕ Botón "Siguiente"
+    // Botón "Siguiente"
     container.appendChild(createNavigationButton("next", "Siguiente", () => {
         if (currentPage < totalPages) {
             currentPage++;
@@ -108,9 +164,9 @@ const setupPagination = () => {
     }));
 };
 
-// 🖱️ **Crea un botón de navegación ("Anterior" o "Siguiente")**
+// 🖱️ **Crea un botón de navegación**
 const createNavigationButton = (direction, label, onClick) => {
-    const button = document.createElement("a"); // 🏗️ Crea un elemento de enlace
+    const button = document.createElement("a");
     button.href = "#";
     button.className = `arrows navigation-${direction}`;
     button.innerHTML = `
@@ -119,7 +175,7 @@ const createNavigationButton = (direction, label, onClick) => {
         ${direction === "next" ? `<img src="./assets/siguiente-boton.svg" alt="arrow-right">` : ""}
     `;
     button.addEventListener("click", (event) => {
-        event.preventDefault(); // 🚫 Evita la recarga de página
+        event.preventDefault();
         onClick();
     });
     return button;
@@ -127,16 +183,16 @@ const createNavigationButton = (direction, label, onClick) => {
 
 // 🔢 **Crea un botón de página específico**
 const createPageButton = (pageNumber) => {
-    const button = document.createElement("a"); // 🏗️ Crea un elemento de enlace
+    const button = document.createElement("a");
     button.href = "#";
     button.className = "pagination-button";
     button.textContent = pageNumber;
-    button.dataset.page = pageNumber; // 🔖 Número de página como atributo
+    button.dataset.page = pageNumber;
 
     button.addEventListener("click", (event) => {
-        event.preventDefault(); // 🚫 Evita la recarga de página
-        currentPage = pageNumber; // 🔄 Cambia la página actual
-        renderPage(currentPage); // 🖼️ Renderiza la nueva página
+        event.preventDefault();
+        currentPage = pageNumber;
+        renderPage(currentPage);
     });
 
     return button;

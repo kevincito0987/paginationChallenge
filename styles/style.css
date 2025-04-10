@@ -48,7 +48,7 @@ h1 {
     flex-direction: column;
     align-items: center;
     width: 300px;
-    height: 540px;
+    height: 520px;
     margin: 10px;
     background: linear-gradient(to bottom left, #b3cde0, #1e3c72); /* 🎨 Degradado elegante */
     border-radius: 30px; /* 🔄 Bordes redondeados */
