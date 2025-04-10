@@ -85,77 +85,110 @@ h1 {
     color: var(--color-primary);
 }
 
-/* 🔍 Ajuste del último párrafo dentro del `.card-text` */
-.card-text p:last-child {
-    font-size: 7px;
-}
-
 /********************* 🔘 ESTILOS DE BOTONES *********************/
 .buttom {
-    display: flex;
-    margin: 60px 1px;
-    padding: 20px;
-    width: 100%;
-    height: 50%;
-    align-items: center;
-    justify-content: center;
-    gap: 40px; /* 🎯 Espaciado uniforme entre botones */
+    display: flex; /* 📌 Flexbox para alinear los elementos en fila */
+    align-items: center; /* 🌀 Centra verticalmente los botones */
+    justify-content: center; /* 🏗️ Centra los botones horizontalmente */
+    gap: 10px; /* 🎯 Espaciado uniforme entre los botones */
+    padding: 10px; /* 📏 Espaciado interno */
+    width: 100%; /* 📐 Ancho completo */
+    margin: 20px 0; /* 🖼️ Separación entre el contenido */
 }
 
-/* 🔄 Estilos de las flechas "Anterior" y "Siguiente" */
+/********************** BOTONES DE NAVEGACIÓN **********************/
+
+/* 🔄 Estilos generales para los botones "Anterior" y "Siguiente" */
 .arrows {
     display: flex;
+    align-items: center; /* 🌀 Centra verticalmente */
     justify-content: center;
-    align-items: center;
     text-decoration: none;
-    gap: 30px;
+    padding: 8px 12px; /* 📏 Espaciado interno */
+    font-weight: bold;
+    color: var(--color-primary); /* 🔤 Texto en color primario */
+    background-color: #ffa600a6; /* 🌟 Fondo amarillo claro */
+    border-radius: 8px; /* 🔄 Bordes suaves */
+    transition: box-shadow 0.4s, background-color 0.4s; /* ✨ Animaciones suaves */
 }
 
-/* 🖼️ Iconos de los botones */
+/* 🔄 Iconos dentro de los botones */
 .arrows img {
     width: 30px;
     height: 30px;
 }
 
-/* 📝 Texto de los botones */
-.arrows p {
-    font-family: "DM_Sans-Medium";
-    font-size: 22px;
-    color: var(--color-primary);
+/* 🎭 Hover con fondo azul */
+.arrows:hover {
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.5); /* 🌟 Sombra en hover */
+    background-color: #007bff; /* 🔵 Fondo azul */
+    color: white; /* 🔤 Texto blanco */
+}
+
+/* 🎯 Estado de clic */
+.arrows:active {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3); /* ✨ Sombra suave en clic */
+}
+
+/********************** BOTONES DE PAGINACIÓN **********************/
+
+/* 🔢 Contenedor de botones numerados */
+.pagination-buttons {
+    display: flex; /* 📌 Flexbox para mostrar los números en fila */
+    gap: 8px; /* 🎯 Espaciado entre botones */
+    justify-content: center;
+}
+
+/* 🖱️ Estilo de cada botón */
+.pagination-button {
+    display: inline-block; /* 📦 Bloque en línea */
+    text-align: center;
+    padding: 8px 12px;
+    border: 1px solid var(--color-primary); /* 📋 Borde del color principal */
+    background-color: #ffd700; /* 🌟 Fondo amarillo claro */
+    color: var(--color-secondary); /* 🔤 Texto en color secundario */
+    border-radius: 4px; /* 🔄 Bordes redondeados */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.4s, box-shadow 0.4s; /* ✨ Transición suave */
+}
+
+/* 🎭 Hover en botones numerados */
+.pagination-button:hover {
+    background-color: #007bff; /* 🔵 Fondo azul en hover */
+    color: white; /* 🔤 Texto blanco */
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3); /* 🌟 Sombra en hover */
+}
+
+/* 📌 Botón activo */
+.pagination-button.active {
+    background-color: #0056b3; /* 🌟 Fondo azul más oscuro */
+    color: white; /* 🔤 Texto blanco */
+    border-color: var(--color-dark);
+    box-shadow: 0px 8px 25px rgba(0, 123, 255, 0.6); /* 🎯 Sombra especial para el activo */
 }
 
 /********************* 📱 ESTILOS PARA DISPOSITIVOS MÓVILES *********************/
 @media screen and (max-width: 600px) {
     .card-container {
         display: flex;
-        flex-direction: column; /* 📌 Acomoda las tarjetas en columna */
+        flex-direction: column; /* 📌 Columna en dispositivos pequeños */
         align-items: center;
-        gap: 15px; /* 🌌 Espaciado entre tarjetas */
-        padding: 10px; /* 📏 Evita que el contenido toque los bordes */
+        gap: 15px; /* 🌌 Espaciado reducido */
+        padding: 10px;
     }
 
     .card {
-        width: 95%; /* 📏 Ajusta el ancho de cada tarjeta */
-        padding: 12px; /* 📌 Espaciado interno */
-        font-size: 13px; /* 🔤 Ajuste de texto para mejor lectura */
-        word-wrap: break-word; /* 📝 Evita que textos largos rompan el diseño */
-        overflow: hidden; /* ✂️ Previene desbordamientos visuales */
-    }
-
-    .card-image {
-        width: 100%; /* 📸 Ajusta el tamaño de la imagen */
-        height: auto;
-        object-fit: cover; /* 🖼️ Ajusta el tamaño de las imágenes sin distorsión */
+        width: 95%; /* 📐 Ajusta el ancho de las tarjetas */
     }
 
     .buttom {
-        align-items: center;
-        gap: 10px;
-        justify-content: center;
+        flex-direction: column; /* 🌀 Acomoda botones en columna */
+        gap: 10px; /* 🎯 Espaciado uniforme */
     }
 
-    .card-text {
-        font-size: 12px; /* 📏 Hace que el texto se vea más proporcionado */
-        line-height: 1.4; /* 📐 Mejora la legibilidad */
+    .pagination-button {
+        font-size: 0.8rem; /* 🔤 Ajuste de tamaño de texto */
+        padding: 6px 8px; /* 📏 Ajuste de espacio interno */
     }
 }
