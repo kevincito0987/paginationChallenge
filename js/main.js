@@ -91,11 +91,9 @@ const updateCardImage = (character, index) => {
             "https://preview.redd.it/ebn2tdznx1pd1.jpeg?auto=webp&s=c87056f6fed51dccc88ed7fadcaa41b350d0565b",
             "https://s0.smartresize.com/wallpaper/287/15/HD-wallpaper-sage-mode-jiraiya-anime-naruto.jpg"
         ],
-        // Otros personajes que necesitan imágenes alternadas:
         "Madara Uchiha": [
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVsgS9bbR2ZpKXeY6Bor2oYI2RD5wTCEWzyw&s"
         ],
-        // Puedes seguir añadiendo más personajes aquí...
         "Mitsuki": [
             "   https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6H73qPGjBglfkPUjy2gjfgIQUghEA7nKPWQ&s"
         ],
@@ -120,28 +118,48 @@ const updateCardImage = (character, index) => {
     };
 
     const isSpecialCase = specialCases[character.name];
-    const defaultImage = images[0] || "./assets/default-image.jpg"; // 📸 La primera imagen de la API es la predeterminada
+    const defaultImages = images.length > 0 ? images : ["./assets/default-image.jpg"]; // 🌟 Usamos todas las imágenes de la API si hay varias o asignamos una imagen predeterminada
 
-    if (isSpecialCase) {
-        const allImages = [defaultImage, ...specialCases[character.name]]; // 🌟 Imagen API + URLs adicionales
+    if (character.name === "Jiraiya") {
+        // 🎯 Lógica específica para Jiraiya (caso especial)
+        const jiraiyaImages = specialCases["Jiraiya"]; // 🌟 Usamos las imágenes configuradas para Jiraiya
+        assignImage(imageElement, jiraiyaImages[currentIndex], character.name); // 🔄 Mostrar la primera imagen al iniciar
+        console.log(`📷 Imagen inicial para Jiraiya mostrada: ${jiraiyaImages[currentIndex]}`);
 
-        // 🔄 Mostrar siempre la primera imagen al iniciar
-        assignImage(imageElement, allImages[currentIndex], character.name);
+        imageElement.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % jiraiyaImages.length; // 🎯 Alterna cíclicamente entre las dos imágenes
+            assignImage(imageElement, jiraiyaImages[currentIndex], character.name);
+            console.log(`🔄 Alternando imagen de Jiraiya: ${jiraiyaImages[currentIndex]}`);
+        });
+
+        return; // 🚫 Finalizamos aquí para Jiraiya
+    }
+
+    if (isSpecialCase && defaultImages.length === 1) {
+        // 🎯 Lógica específica para personajes con una sola imagen en la API (como Madara Uchiha)
+        const allImages = [...defaultImages, ...specialCases[character.name]]; // 🌟 Combina la imagen de la API con la URL alternativa
+        assignImage(imageElement, allImages[currentIndex], character.name); // 🔄 Mostrar la primera imagen al iniciar
         console.log(`📷 Imagen inicial para ${character.name} mostrada: ${allImages[currentIndex]}`);
 
-        // 🔄 Alterna entre imágenes al hacer clic
         imageElement.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % allImages.length; // 🎯 Solo alterna entre las imágenes disponibles
+            currentIndex = (currentIndex + 1) % allImages.length; // 🎯 Alterna cíclicamente entre las imágenes disponibles
             assignImage(imageElement, allImages[currentIndex], character.name);
             console.log(`🔄 Alternando imagen de ${character.name}: ${allImages[currentIndex]}`);
         });
 
-        return;
+        return; // 🚫 Finalizamos aquí para los casos con una sola imagen
     }
 
     // 💡 **Lógica general para otros personajes**
-    assignImage(imageElement, defaultImage, character.name);
-    console.log(`📷 Imagen predeterminada mostrada para ${character.name}`);
+    assignImage(imageElement, defaultImages[currentIndex], character.name); // 🌟 Usamos las imágenes de la API directamente
+
+    if (defaultImages.length > 1) {
+        imageElement.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % defaultImages.length; // 🔄 Alterna cíclicamente entre las imágenes de la API
+            assignImage(imageElement, defaultImages[currentIndex], character.name);
+            console.log(`🔄 Alternando imagen de ${character.name}: ${defaultImages[currentIndex]}`);
+        });
+    }
 };
 
 // 🖼️ **Asigna una imagen a un elemento**
@@ -149,6 +167,7 @@ const assignImage = (imageElement, url, characterName) => {
     imageElement.src = url; // 🎯 Asigna la fuente de la imagen
     imageElement.alt = `Imagen de ${characterName || "Personaje desconocido"}`; // ✏️ Texto alternativo para accesibilidad
 };
+
 
 /*********************** 🔘 Funciones de Navegación ***********************/
 
