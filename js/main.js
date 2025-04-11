@@ -60,68 +60,64 @@ const updateCardImage = (character, index) => {
         return; // ⛔ Detenemos ejecución si no existe el elemento
     }
 
-    // 🖼️ Imágenes predeterminadas específicas para tarjetas sin imágenes o con errores
+    // 🖼️ Imágenes predeterminadas específicas
     const defaultImages = [
-        "https://preview.redd.it/ebn2tdznx1pd1.jpeg?auto=webp&s=c87056f6fed51dccc88ed7fadcaa41b350d0565b", // Imagen 0
-        "https://s0.smartresize.com/wallpaper/287/15/HD-wallpaper-sage-mode-jiraiya-anime-naruto.jpg" // Imagen 1
+        "https://preview.redd.it/ebn2tdznx1pd1.jpeg?auto=webp&s=c87056f6fed51dccc88ed7fadcaa41b350d0565b", // Imagen inicial
+        "https://s0.smartresize.com/wallpaper/287/15/HD-wallpaper-sage-mode-jiraiya-anime-naruto.jpg" // Imagen alternada
     ];
-
-    // 🗃️ Determina qué imágenes usar: imágenes del personaje o predeterminadas
-    const images = character.images?.length > 0 ? character.images : defaultImages;
 
     let currentIndex = 0; // 🌀 Índice para alternar entre imágenes
 
-    // 📤 Función para asignar imágenes de manera segura
-    const assignImage = (url) => {
-        imageElement.src = url; // Asigna la imagen actual
-        imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`;
-        console.log(`✅ Imagen asignada: ${url}`);
-    };
-
-    // 🎯 Si es la tarjeta 8, utiliza las imágenes predeterminadas
+    // 🎯 Caso específico: tarjeta 8
     if (index === 7) {
-        // Asignar la primera imagen predeterminada
-        assignImage(defaultImages[currentIndex]);
+        // Asignar directamente la primera imagen predeterminada al cargar
+        validateAndAssignImage(defaultImages[0]); // Llama a la función para asignar la imagen inicial
+        console.log(`✅ Imagen inicial asignada en tarjeta 8: ${defaultImages[0]}`);
 
-        // 🎭 Alternar entre las imágenes predeterminadas al hacer clic
+        // Al hacer clic, cambiar a la imagen alternada específica
         imageElement.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % defaultImages.length; // Cambia entre 0 y 1
-            assignImage(defaultImages[currentIndex]); // Asigna la nueva imagen
-            console.log(`🖼️ Alternando imagen en tarjeta 8: ${defaultImages[currentIndex]}`);
+            imageElement.src = defaultImages[1]; // Cambia directamente a la segunda imagen
+            imageElement.alt = `Imagen alternada para ${character.name || "Personaje desconocido"}`;
+            console.log(`🖼️ Imagen alternada por clic en tarjeta 8: ${defaultImages[1]}`);
         });
-        return;
+
+        return; // Salimos aquí para evitar conflictos con la lógica general
     }
 
-    // 💡 Para otras tarjetas, valida y asigna imágenes dinámicamente
+    // 💡 Lógica general para otras tarjetas
+    const images = character.images?.length > 0 ? character.images : defaultImages;
+
     const validateAndAssignImage = (url, fallback = false) => {
         fetch(url)
             .then((response) => {
                 if (response.ok) {
-                    assignImage(url); // Asigna la imagen si la URL es válida
+                    imageElement.src = url; // Asigna la imagen si la URL es válida
+                    imageElement.alt = `Imagen de ${character.name || "Personaje desconocido"}`;
+                    console.log(`✅ Imagen asignada correctamente: ${url}`);
                 } else if (!fallback) {
                     console.warn(`⚠️ URL no válida (${response.status}): ${url}. Usando imagen predeterminada.`);
-                    assignImage(defaultImages[0]); // Fallback a la primera imagen predeterminada
+                    imageElement.src = defaultImages[0]; // Fallback a la primera imagen predeterminada
+                    imageElement.alt = `Imagen predeterminada para ${character.name || "Personaje desconocido"}`;
                 }
             })
             .catch((error) => {
                 if (!fallback) {
                     console.error(`❌ Error al validar la imagen ${url}:`, error);
-                    assignImage(defaultImages[0]); // Fallback a la primera imagen predeterminada
+                    imageElement.src = defaultImages[0]; // Fallback a la primera imagen predeterminada
+                    imageElement.alt = `Imagen predeterminada para ${character.name || "Personaje desconocido"}`;
                 }
             });
     };
 
-    // Asignar la primera imagen dinámica o predeterminada
-    validateAndAssignImage(images[currentIndex]);
+    validateAndAssignImage(images[0]); // Asignar la primera imagen dinámica o predeterminada
 
     // 🎭 Alternar entre imágenes dinámicas o predeterminadas al hacer clic
     imageElement.addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % images.length; // Cambia entre 0 y la longitud de imágenes
         validateAndAssignImage(images[currentIndex]); // Asigna la nueva imagen
-        console.log(`🖼️ Alternando imagen: ${images[currentIndex]}`);
+        console.log(`🖼️ Alternando imagen dinámica: ${images[currentIndex]}`);
     });
 };
-
 
 
 // 📝 **Actualiza el texto en elementos específicos**
